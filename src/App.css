@@ -1,0 +1,936 @@
+/* src/App.css */
+
+/* ===================================================================
+   1. GLOBAL STYLES & FONT IMPORT
+   =================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap');
+
+
+:root {
+  --primary-color: #0d6efd;
+  --primary-rgb: 13, 110, 253;
+  --secondary-color: #6c757d;
+  --success-color: #198754;
+  --danger-color: #dc3545;
+  --light-color: #f8f9fa;
+  --dark-color: #212529;
+  
+  /* UI Variables */
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --card-radius: 16px; /* Updated radius for modern look */
+  --font-family: 'Poppins', sans-serif;
+  --font-tech: 'Orbitron', sans-serif;
+  
+  /* Navbar Variables */
+  --navbar-z-index: 1050;
+  --navbar-blur: 14px;
+  --navbar-bg: rgba(255, 255, 255, 0.85);
+  --navbar-border: 1px solid rgba(255, 255, 255, 0.3);
+  --navbar-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  --mobile-header-height: 4.5rem;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--light-color) !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+.d-flex.flex-column.min-vh-100 {
+  background-color: var(--light-color);
+}
+
+.content-spacer {
+  padding-top: 0;
+  padding-bottom: 100px; /* MODIFIED: Reduced space for mobile bottom dock for less scrolling */
+}
+
+@media (min-width: 992px) {
+  .content-spacer {
+    padding-left: 70px; /* Space for Desktop Command Bar */
+    padding-top: 0; 
+    padding-bottom: 0;
+  }
+}
+
+/* ===================================================================
+   2. GLOBAL COMPONENT OVERRIDES
+   =================================================================== */
+
+/* Cards */
+.card {
+  border: none !important;
+  border-radius: var(--card-radius) !important;
+  box-shadow: var(--card-shadow) !important;
+  transition: all 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Modals */
+.modal-content {
+  border-radius: var(--card-radius);
+  border: none;
+}
+.modal-header { border-bottom: none; }
+
+/* Forms */
+.form-control, .form-select {
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+}
+.form-control:focus, .form-select:focus {
+  box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.15);
+  border-color: var(--primary-color);
+}
+
+/* Bootstrap Phone Input styling to match the theme (Added for Mobile Responsiveness) */
+.react-tel-input .form-control {
+    width: 100% !important;
+    height: 52px; /* Uniform height */
+}
+.react-tel-input .flag-dropdown {
+    height: 52px; /* Uniform height */
+    border-radius: 8px 0 0 8px; /* Match form control border radius */
+    border: 1px solid #ced4da;
+    border-right: none;
+}
+.react-tel-input .flag-dropdown.open {
+    border-radius: 8px 0 0 0;
+}
+.react-tel-input .form-control.open {
+    border-radius: 0 8px 8px 8px !important;
+}
+/* Ensure the input's padding is correct after the flag */
+.react-tel-input .form-control {
+    padding-left: 55px !important; /* Adjust padding for country code display */
+}
+
+
+/* Buttons */
+.btn-primary {
+  box-shadow: 0 4px 10px rgba(var(--primary-rgb), 0.3);
+}
+/* Lift effect on hover */
+.btn-hover-lift { transition: transform 0.2s, box-shadow 0.2s; }
+.btn-hover-lift:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
+.btn-hover-lift:active { transform: scale(0.98); }
+
+/* Scrollbar Hiding Helper */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Custom Text Hover Utility (for links) */
+.hover-text-primary:hover { color: var(--primary-color) !important; }
+
+/* ===================================================================
+   3. ZENITH NAVBAR SYSTEM
+   =================================================================== */
+
+/* --- NEW: Desktop Zenith Command Bar (Side Dock) --- */
+.zenith-command-bar {
+  position: fixed; top: 0; left: 0;
+  height: 100vh; width: 70px; /* Narrow vertical bar */
+  z-index: var(--navbar-z-index);
+  display: flex; flex-direction: column;
+  align-items: center;
+  
+  /* Glassmorphic/Advanced Styling */
+  background: var(--navbar-bg);
+  backdrop-filter: blur(var(--navbar-blur));
+  -webkit-backdrop-filter: blur(var(--navbar-blur));
+  border-right: var(--navbar-border);
+  box-shadow: 8px 0 32px 0 rgba(31, 38, 135, 0.15); /* Vertical Shadow */
+  padding: 1rem 0;
+}
+
+.agent-profile-dock-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 1rem;
+}
+
+.profile-link-desktop {
+    width: 50px; height: 50px;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.profile-dock-avatar {
+    width: 50px; height: 50px;
+    background: rgba(var(--primary-rgb), 0.1);
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; font-weight: 600;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(var(--primary-rgb), 0.2); /* Subtle shadow */
+    transition: all 0.2s ease;
+}
+.profile-dock-avatar:hover {
+    transform: scale(1.05);
+}
+.profile-dock-avatar img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.dock-separator {
+    width: 60%; height: 1px;
+    background-color: #ddd;
+}
+
+.zenith-command-bar-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    flex-grow: 1; /* Pushes the logout button to the bottom */
+    padding-top: 1.5rem;
+}
+
+/* Redefining desktop nav links for the vertical bar */
+.zenith-nav-icon-link {
+  color: var(--secondary-color);
+  background: transparent;
+  border-radius: 12px; /* Square/Rectangular hover effect */
+  width: 45px; height: 45px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s ease;
+  text-decoration: none; border: none;
+  font-size: 1.2rem;
+}
+.zenith-nav-icon-link:hover, .zenith-nav-icon-link.active {
+  background: rgba(var(--primary-rgb), 0.15);
+  color: var(--primary-color);
+  transform: scale(1.05);
+}
+.zenith-nav-icon-link.logout-btn { color: var(--danger-color); margin-top: auto; margin-bottom: 1rem; }
+.zenith-nav-icon-link.logout-btn:hover {
+  background: rgba(220, 53, 69, 0.15);
+}
+
+/* --- Mobile Bottom Dock Navbar --- */
+.zenith-navbar-mobile {
+  position: fixed; bottom: 20px; left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--navbar-z-index);
+  display: flex; align-items: center; justify-content: space-around;
+  width: 90%; max-width: 380px;
+  background: var(--navbar-bg);
+  backdrop-filter: blur(var(--navbar-blur));
+  -webkit-backdrop-filter: blur(var(--navbar-blur));
+  border: var(--navbar-border);
+  box-shadow: var(--navbar-shadow);
+  border-radius: 50px;
+  padding: 0.5rem;
+  transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+}
+.zenith-navbar-mobile.hidden {
+  transform: translateX(-50%) translateY(150px);
+  opacity: 0;
+}
+
+.zenith-dock-item {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: transparent; border: none;
+  color: var(--secondary-color);
+  text-decoration: none;
+  border-radius: 20px;
+  padding: 0.4rem 1rem;
+  font-size: 11px; font-weight: 500;
+  transition: all 0.3s ease;
+}
+.zenith-dock-item .icon { font-size: 22px; margin-bottom: 2px; }
+.zenith-dock-item:hover { color: var(--primary-color); }
+.zenith-dock-item.active {
+  background: rgba(var(--primary-rgb), 0.1);
+  color: var(--primary-color);
+}
+
+/* --- Mobile Offcanvas Menu --- */
+.zenith-offcanvas.offcanvas-bottom {
+  height: 75vh !important;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(var(--navbar-blur));
+  -webkit-backdrop-filter: blur(var(--navbar-blur));
+  border-top: var(--navbar-border);
+  box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+}
+.zenith-offcanvas .user-avatar { width: 50px; height: 50px; font-size: 22px; }
+
+/* ===================================================================
+   4. AUTH PAGES (Login/Signup - Advanced Light Theme)
+   =================================================================== */
+
+.auth-container {
+  min-height: calc(100vh - 150px);
+  padding: 20px 0;
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+}
+
+/* Advanced Card Style for Auth - UNQIUE LOGIN/SIGNUP CARD */
+.auth-card-advanced { 
+    border-radius: 20px !important;
+    overflow: hidden;
+    /* Use a stronger, cleaner shadow for unique look */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+    border: 1px solid #e0e0e0 !important;
+}
+
+/* Auth Header Logo (Small version of landing icon style) */
+.auth-header-logo {
+    width: 50px;
+    height: 50px;
+    padding: 10px;
+    border-radius: 50%;
+    background-color: rgba(var(--primary-rgb), 0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Input Group Enhancements (Shared between login and signup) */
+.input-group .form-control {
+    border-radius: 0 8px 8px 0 !important;
+    border-left: none !important;
+}
+.input-group .input-group-text, 
+.input-group .btn-outline-secondary {
+    border-radius: 8px 0 0 8px !important;
+    border-right: none !important;
+    background-color: #f0f0f0;
+    border-color: #ced4da;
+    color: var(--secondary-color);
+}
+.input-group .form-control:focus {
+    z-index: 10; /* Bring to front on focus to handle border overlap */
+}
+
+/* Separator for Auth pages */
+.auth-separator-advanced {
+  height: 1px;
+  background-color: #e9ecef;
+  margin: 1.5rem 0;
+}
+
+/* Login/Signup specific link style */
+.auth-link-primary {
+    color: var(--primary-color) !important;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+.auth-link-primary:hover {
+    color: #0043a8 !important; /* Darker blue on hover */
+    text-decoration: underline;
+}
+
+/* Modal Enhancements */
+.modal-title-advanced {
+    font-weight: 700;
+    color: var(--dark-color);
+}
+
+
+/* ===================================================================
+   5. DASHBOARD LAYOUT (Zenith Data Stream)
+   =================================================================== */
+
+/* --- DASHBOARD STRUCTURAL ENHANCEMENTS --- */
+.dashboard-layout {
+  background-color: #fcfcfc; 
+  height: 100%;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  position: relative;
+}
+
+/* 1. Insight and Task Panels Styling */
+.dashboard-insight-panel {
+    background-color: #ffffff; 
+    border-bottom: 1px solid #eee;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+/* Advanced JS/CSS Feature 1: Sticky Action Bar */
+.dashboard-action-items {
+    background-color: #fff0f0; 
+    border-left: 5px solid var(--danger-color);
+    padding: 1rem;
+}
+/* IMPORTANT: Corrected the desktop sticky bar top value to compensate for the insight panel */
+.dashboard-action-sticky {
+    position: sticky;
+    top: 0; 
+    z-index: 10;
+}
+
+/* Advanced JS/CSS Feature 2: Action Center Card */
+.action-center-card {
+    background-color: #fff;
+    border-radius: var(--card-radius) !important;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(var(--primary-rgb), 0.1);
+}
+
+/* 3. List Item Active State Refinement */
+.customer-list-item.active {
+  background-color: rgba(var(--primary-rgb), 0.1) !important; 
+  color: var(--primary-color) !important;
+  border-left: 4px solid var(--primary-color) !important;
+  padding-left: calc(1.25rem - 4px); 
+  transition: all 0.2s ease;
+}
+.customer-list-item.active span,
+.customer-list-item.active small,
+.customer-list-item.active svg {
+  color: var(--primary-color) !important; 
+}
+
+
+/* Common Container Spacing */
+.dashboard-container { padding-top: 0 !important; }
+
+@media (min-width: 768px) {
+  .dashboard-container {
+    height: calc(100vh - 100px); 
+    max-height: 800px;
+    margin-top: 1.5rem !important;
+    padding: 0 !important;
+  }
+}
+
+
+/* --- Customer Lane (List) --- */
+.customer-lane {
+  background: var(--light-color);
+  height: 100%;
+  display: flex; flex-direction: column;
+  border-right: 1px solid #e0e0e0;
+}
+
+.customer-search { flex-grow: 1; }
+.customer-search .form-control, .customer-search .input-group-text { border-radius: 50px; }
+.customer-search .input-group-text { border-right: 0; background-color: #fff; border-radius: 50px 0 0 50px !important; }
+.customer-search .form-control { border-left: 0; border-radius: 0 50px 50px 0 !important; }
+.btn-add-customer-desktop { border-radius: 50px !important; font-weight: 500; width: 100%; }
+
+@media (min-width: 992px) {
+  .customer-lane-header { flex-direction: column-reverse; gap: 1rem; }
+}
+
+.customer-list { overflow-y: auto; flex-grow: 1; padding: 0; margin: 0; list-style: none; }
+
+
+/* --- Focus Pane (Right Side Content) --- */
+.focus-pane {
+  padding: 2.5rem;
+  height: 100%; overflow-y: auto;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.focus-pane-placeholder { color: var(--secondary-color); animation: fadeIn 0.5s ease; }
+.focus-pane-content { text-align: left; animation: fadeIn 0.5s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Mobile Headers (Shared Styles) --- */
+.dashboard-mobile-header, 
+.details-page-mobile-header,
+.focus-pane-mobile-header {
+  position: sticky; top: 0; left: 0; width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--navbar-bg);
+  backdrop-filter: blur(var(--navbar-blur));
+  -webkit-backdrop-filter: blur(var(--navbar-blur));
+  border-bottom: 1px solid #e9ecef;
+  z-index: 1000;
+  display: flex; align-items: center;
+  height: 4.5rem;
+}
+
+/* Specific adjustments for each header type */
+.dashboard-mobile-header { gap: 0.75rem; }
+.focus-pane-mobile-header { position: absolute; justify-content: space-between; }
+.details-page-mobile-header { justify-content: space-between; }
+
+.brand-text-dark {
+  font-weight: 700;
+  background: linear-gradient(45deg, var(--primary-color), #0dcaf0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.5px;
+}
+
+/* --- Dashboard Mobile Responsive Logic --- */
+@media (max-width: 767px) {
+  .dashboard-container.mt-4 { margin-top: 0 !important; }
+  .content-spacer .container { padding-left: 0; padding-right: 0; }
+  
+  .dashboard-layout {
+    box-shadow: none; border-radius: 0; overflow-x: hidden;
+    height: calc(100vh - 120px - var(--mobile-header-height)); 
+  }
+  
+  .customer-lane {
+    position: absolute; width: 100%; height: 100%;
+    transform: translateX(0); transition: transform 0.3s ease-in-out;
+    z-index: 20; background: #fff;
+  }
+  
+  .focus-pane {
+    position: absolute; width: 100%; height: 100%;
+    transform: translateX(100%); transition: transform 0.3s ease-in-out;
+    z-index: 10; background: #fff;
+    padding: 1rem !important; /* Minimal top padding */
+    justify-content: flex-start; text-align: left; overflow-y: auto;
+  }
+  
+  .dashboard-layout.focus-active .customer-lane { transform: translateX(-100%); }
+  .dashboard-layout.focus-active .focus-pane { 
+    transform: translateX(0);
+    padding: 1rem; /* Minimal padding for focused mobile view */
+  }
+}
+
+
+/* ===================================================================
+   6. HERO PROFILE CARD & MODERN STYLES (Shared)
+   =================================================================== */
+
+/* 1. Hero Card Gradient */
+.customer-hero-card {
+  background: linear-gradient(135deg, #0d6efd 0%, #0043a8 100%);
+  color: white;
+  border-radius: 20px !important;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(13, 110, 253, 0.3) !important;
+  margin-top: -10px; /* Slight overlap for desktop */
+}
+.hero-bg-pattern {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.1) 0%, transparent 20%),
+                    radial-gradient(circle at 90% 80%, rgba(255,255,255,0.1) 0%, transparent 20%);
+  opacity: 0.6;
+}
+
+/* 2. Glassmorphic Avatar */
+.profile-avatar-lg {
+  width: 80px; height: 80px; /* Desktop default */
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 3px solid rgba(255,255,255,0.5);
+  color: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem; font-weight: 700;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* 3. Glass Stats Box */
+.stats-glass-box {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(5px);
+}
+.stats-separator {
+  width: 1px; height: 40px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 4. Modern Policy Cards */
+.policy-card-modern {
+  border-radius: 16px !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+  background: #fff;
+}
+.policy-card-modern:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
+}
+.status-strip { height: 6px; width: 100%; }
+
+.policy-details-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+  background: #f8f9fa; padding: 1rem; border-radius: 12px;
+}
+.detail-item { display: flex; flex-direction: column; }
+.detail-item label {
+  font-size: 0.7rem; text-transform: uppercase;
+  color: #6c757d; letter-spacing: 0.5px; font-weight: 600;
+  margin-bottom: 2px;
+}
+.detail-item.full-width {
+  grid-column: 1 / -1;
+  border-top: 1px dashed #dee2e6; padding-top: 0.5rem;
+}
+
+/* 5. Helpers */
+.letter-spacing-1 { letter-spacing: 1px; }
+.empty-state-container { border: 2px dashed #dee2e6; background-color: #fdfdfd; }
+.hover-bg-gray:hover { background-color: #e9ecef !important; }
+
+/* 6. Mobile Specific Overrides for Hero Card */
+@media (max-width: 768px) {
+  .customer-hero-card {
+    margin-left: -0.8rem; margin-right: -0.8rem;
+    border-radius: 0 0 30px 30px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    margin-top: -1.5rem; /* Connects with header */
+    padding-bottom: 1rem;
+  }
+  .profile-avatar-lg {
+    width: 90px; height: 90px;
+    font-size: 3rem; margin-bottom: 0.5rem; border-width: 4px;
+  }
+  .customer-hero-card h2 { font-size: 2rem; }
+  
+  .bg-white.bg-opacity-10 {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}
+
+
+/* ===================================================================
+   7. PAGE SPECIFIC STYLES
+   =================================================================== */
+
+/* --- Customer Details Page --- */
+.details-page-mobile-header .mobile-header-title {
+  font-weight: 600; font-size: 1.1rem; color: var(--dark-color);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  position: absolute; left: 50%; transform: translateX(-50%); max-width: 50%;
+}
+.btn-add-policy-text {
+  border-radius: 50px !important; font-weight: 600;
+  font-size: 0.9rem; padding: 0.3rem 0.8rem;
+  box-shadow: none !important;
+  color: var(--primary-color) !important;
+  background: transparent !important;
+  border: 2px solid var(--primary-color) !important;
+}
+
+@media (max-width: 991px) {
+  .details-page-container.mt-4 { margin-top: 0 !important; }
+  .details-page-container { 
+    padding-top: 1rem !important; 
+    padding-bottom: 0 !important; 
+  } 
+  .customer-hero-card {
+      margin-bottom: 0.75rem !important;
+  }
+  .customer-details-actions {
+      margin-top: 0.5rem !important;
+      margin-bottom: 0.5rem !important;
+  }
+}
+
+/* --- Ledger Page --- */
+.btn-renew-policy-mobile {
+  border-radius: 50px !important; font-weight: 600; font-size: 0.9rem;
+  padding: 0.3rem 0.8rem;
+  background-color: var(--success-color); border: none;
+}
+
+.ledger-status-card {
+  background: linear-gradient(135deg, var(--dark-color) 0%, #495057 100%);
+  color: white;
+}
+@media (max-width: 991px) {
+  .ledger-status-card {
+    border-radius: 0 0 var(--card-radius) var(--card-radius) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+    margin: -1.5rem -1.5rem 0 -1.5rem;
+    padding: 1.5rem;
+  }
+}
+.ledger-status-card .display-4 { color: white; font-weight: 700; }
+.ledger-status-card .text-muted { color: rgba(255, 255, 255, 0.7) !important; }
+.ledger-status-card .badge {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+.ledger-status-card .alert-warning { background-color: #ffc107; color: var(--dark-color); }
+
+/* Ledger progress bar override for hero context */
+.customer-hero-card .progress {
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 10px;
+}
+
+/* Ledger Tabs */
+.ledger-tabs-card { padding: 0; margin-top: 1.5rem; }
+.ledger-tabs-card .card-body { padding: 0.5rem; }
+@media (min-width: 768px) {
+  .ledger-tabs-card .card-body { padding: 1rem; }
+}
+
+.custom-ledger-tabs .nav-link {
+  background-color: transparent;
+  color: var(--secondary-color);
+  transition: all 0.2s ease;
+  font-weight: 600;
+  border-radius: 50px !important;
+  padding: 0.75rem 1rem;
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+}
+.custom-ledger-tabs .nav-link:hover {
+  background-color: rgba(0,0,0,0.03); color: var(--dark-color);
+}
+.custom-ledger-tabs .nav-link.active {
+  background-color: var(--primary-color) !important; color: white !important;
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+}
+
+/* --- Profile Page --- */
+.profile-card .card-header {
+  background: linear-gradient(45deg, var(--primary-color), #0dcaf0);
+  color: white;
+}
+.profile-detail-row {
+  display: flex; align-items: center; gap: 1rem;
+  margin-bottom: 1rem; padding: 1rem;
+  background-color: var(--light-color);
+  border-radius: 8px; border: 1px solid #eee;
+}
+.profile-detail-row .icon-wrapper { flex-shrink: 0; color: var(--secondary-color); }
+
+/* --- Footer --- */
+footer { box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
+.hover-text-white:hover {
+  color: #fff !important;
+  transform: scale(1.1); transition: all 0.2s ease;
+}
+
+/* --- NEW: Advanced Profile Page Styles --- */
+.profile-hero-card {
+  background-color: #fcfcfc !important;
+  border-left: 5px solid var(--primary-color) !important;
+}
+
+.profile-avatar-xl {
+    width: 120px; height: 120px; 
+    background: rgba(var(--primary-rgb), 0.15);
+    border: 4px solid var(--primary-color);
+    color: var(--primary-color);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3.5rem; font-weight: 700;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.2); /* Subtle shadow */
+    transition: all 0.2s ease;
+}
+.profile-avatar-xl img {
+    object-fit: cover;
+}
+
+.profile-stats-box {
+    background-color: #e9f0ff; /* Light blue background for stats */
+    border: 1px solid #d0e0ff;
+}
+
+.profile-detail-group .input-group-text {
+    background-color: #f8f9fa !important;
+    border-color: #dee2e6 !important;
+}
+/* Ensure form control read-only state is clean */
+.profile-detail-group .form-control[readonly] {
+    background-color: #fff !important;
+    cursor: default;
+}
+
+
+/* ===================================================================
+   8. LANDING PAGE STYLES (ADAPTED FOR LIGHT THEME)
+   =================================================================== */
+
+.landing-card-light {
+    /* Subtle lift and border effect for cards on light background */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important; 
+    border: 1px solid #e0e0e0 !important;
+    transition: all 0.3s ease;
+}
+
+.landing-card-light:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.1) !important;
+}
+
+/* Custom Access Module (Replaces the dark module and old buttons) */
+.access-module-container-light {
+    display: flex;
+    max-width: 450px;
+    background: #ffffff; 
+    border-radius: 50px;
+    overflow: hidden;
+    padding: 4px; /* Slightly smaller padding */
+    border: 2px solid var(--primary-color); 
+    box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.3);
+}
+
+.access-module-link {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.8rem 1.5rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.login-link-light {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.2);
+}
+
+.login-link-light:hover {
+    background-color: #0043a8;
+    transform: scale(0.98);
+}
+
+.signup-link-light {
+    background-color: transparent;
+    color: var(--dark-color);
+}
+
+.signup-link-light:hover {
+    background-color: rgba(var(--primary-rgb), 0.1);
+    transform: scale(0.98);
+    color: var(--primary-color);
+}
+
+/* Landing Page Helpers */
+.icon-wrapper-sm {
+    padding: 10px;
+    border-radius: 8px;
+    background-color: rgba(var(--primary-rgb), 0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+.landing-badge-pill-light {
+    font-size: 0.75rem; 
+    font-weight: 600; 
+    padding: 0.3em 0.8em;
+    border-radius: 50px !important;
+    letter-spacing: 0.5px;
+    /* Use outline badges for light theme */
+    background-color: transparent !important; 
+    border: 1px solid currentColor;
+}
+
+
+/* ===================================================================
+   9. CUSTOM LOADER STYLES (Zenith Console Look)
+   =================================================================== */
+
+.custom-loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--light-color); /* Light background matching app theme */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    flex-direction: column;
+}
+
+.loader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.shield-container {
+    animation: pulse 1.5s infinite;
+}
+
+.shield-icon {
+    color: var(--primary-color);
+    font-size: 3rem;
+}
+
+.loading-text-container {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 250px;
+    margin-bottom: 1rem;
+}
+
+.loading-text {
+    font-family: var(--font-tech);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--dark-color);
+    /* Typing animation */
+    animation: typing 3s steps(30, end) infinite;
+    display: inline-block;
+}
+
+.loading-bar-custom {
+    width: 250px;
+    height: 8px;
+    background-color: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.loading-bar-fill {
+    height: 100%;
+    width: 0%;
+    background-color: var(--primary-color);
+    border-radius: 4px;
+    /* Loading animation */
+    animation: load-fill 3s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.8; }
+}
+
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+}
+
+@keyframes load-fill {
+    0% { width: 0%; }
+    50% { width: 80%; }
+    100% { width: 100%; }
+}
